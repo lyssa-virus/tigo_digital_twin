@@ -61,7 +61,11 @@ class OdomToTF(Node):
         rx, ry, ryaw = relative_pose(*self.initial, x, y, yaw)
 
         out = TransformStamped()
-        out.header.stamp = t.header.stamp
+        # A pose do Gazebo pode vir sem carimbo de tempo; usa o relógio da simulação (/clock)
+        stamp = t.header.stamp
+        if stamp.sec == 0 and stamp.nanosec == 0:
+            stamp = self.get_clock().now().to_msg()
+        out.header.stamp = stamp
         out.header.frame_id = 'odom'
         out.child_frame_id = 'base_link'
         out.transform.translation.x = rx
