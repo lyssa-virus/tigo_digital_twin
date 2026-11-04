@@ -1,29 +1,75 @@
 #!/usr/bin/env python3
-"""Converte /model/tigo/odometry em TF odom -> base_link (o que o SLAM precisa)."""
+"""Publica o TF odom -> base_link a partir da pose real do TIGO no Gazebo.
+
+O plugin de rodas mecanum não publica odometria nesta versão do Gazebo, então
+usamos /world/lacea_world/pose/info (pose "verdadeira" de todos os objetos).
+Isso equivale a uma odometria perfeita, sem deriva: serve para testar SLAM em
+simulação, mas NÃO para avaliar o desempenho da odometria do robô real.
+
+O frame 'odom' é a pose inicial do robô (o robô começa em odom = 0,0,0).
+Parâmetro: child_name (padrão 'tigo'), o nome do modelo no Gazebo.
+"""
+import math
+
 import rclpy
 from rclpy.node import Node
-from nav_msgs.msg import Odometry
+from rclpy.parameter import Parameter
 from geometry_msgs.msg import TransformStamped
+from tf2_msgs.msg import TFMessage
 from tf2_ros import TransformBroadcaster
+
+
+def quat_to_yaw(q):
+    return math.atan2(2.0 * (q.w * q.z + q.x * q.y), 1.0 - 2.0 * (q.y * q.y + q.z * q.z))
+
+
+def relative_pose(x0, y0, yaw0, x, y, yaw):
+    """Pose (x, y, yaw) expressa no referencial inicial (x0, y0, yaw0)."""
+    dx, dy = x - x0, y - y0
+    c, s = math.cos(-yaw0), math.sin(-yaw0)
+    return c * dx - s * dy, s * dx + c * dy, math.atan2(math.sin(yaw - yaw0), math.cos(yaw - yaw0))
 
 
 class OdomToTF(Node):
     def __init__(self):
         super().__init__('odom_to_tf', parameter_overrides=[
-            rclpy.parameter.Parameter('use_sim_time', rclpy.Parameter.Type.BOOL, True)])
+            Parameter('use_sim_time', Parameter.Type.BOOL, True)])
+        self.declare_parameter('child_name', 'tigo')
+        self.child_name = self.get_parameter('child_name').value
         self.br = TransformBroadcaster(self)
-        self.create_subscription(Odometry, '/model/tigo/odometry', self.cb, 20)
+        self.initial = None
+        self.warned = False
+        self.create_subscription(TFMessage, '/world/lacea_world/pose/info', self.cb, 10)
+        self.get_logger().info(f"Aguardando a pose de '{self.child_name}' em /world/lacea_world/pose/info")
 
     def cb(self, msg):
-        t = TransformStamped()
-        t.header.stamp = msg.header.stamp
-        t.header.frame_id = 'odom'
-        t.child_frame_id = 'base_link'
-        t.transform.translation.x = msg.pose.pose.position.x
-        t.transform.translation.y = msg.pose.pose.position.y
-        t.transform.translation.z = msg.pose.pose.position.z
-        t.transform.rotation = msg.pose.pose.orientation
-        self.br.sendTransform(t)
+        match = [t for t in msg.transforms if t.child_frame_id == self.child_name]
+        if not match:
+            if not self.warned:
+                nomes = sorted({t.child_frame_id for t in msg.transforms})
+                self.get_logger().warn(
+                    f"Pose '{self.child_name}' não encontrada. Frames recebidos: {nomes}. "
+                    "Rode com: --ros-args -p child_name:=NOME")
+                self.warned = True
+            return
+        t = match[0]
+        x, y = t.transform.translation.x, t.transform.translation.y
+        yaw = quat_to_yaw(t.transform.rotation)
+        if self.initial is None:
+            self.initial = (x, y, yaw)
+            self.get_logger().info(f"Pose inicial: x={x:.2f} y={y:.2f} yaw={yaw:.2f}. TF odom->base_link ativo.")
+        rx, ry, ryaw = relative_pose(*self.initial, x, y, yaw)
+
+        out = TransformStamped()
+        out.header.stamp = t.header.stamp
+        out.header.frame_id = 'odom'
+        out.child_frame_id = 'base_link'
+        out.transform.translation.x = rx
+        out.transform.translation.y = ry
+        out.transform.translation.z = 0.0
+        out.transform.rotation.z = math.sin(ryaw / 2.0)
+        out.transform.rotation.w = math.cos(ryaw / 2.0)
+        self.br.sendTransform(out)
 
 
 def main():
