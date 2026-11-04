@@ -12,6 +12,8 @@ echo "  [GZ -> ROS 2]  /ascamera_hp60c/camera_publisher/depth0/image_raw"
 echo "  [GZ -> ROS 2]  /ascamera_hp60c/camera_publisher/depth0/camera_info"
 echo "  [GZ -> ROS 2]  /model/tigo/odometry"
 echo "  [GZ -> ROS 2]  /world/lacea_world/pose/info"
+echo "  [GZ -> ROS 2]  /scan"
+echo "  [GZ -> ROS 2]  /clock"
 echo "============================================================"
 
 ros2 run ros_gz_bridge parameter_bridge \
@@ -19,4 +21,6 @@ ros2 run ros_gz_bridge parameter_bridge \
   /ascamera_hp60c/camera_publisher/depth0/image_raw@sensor_msgs/msg/Image[ignition.msgs.Image \
   /ascamera_hp60c/camera_publisher/depth0/camera_info@sensor_msgs/msg/CameraInfo[ignition.msgs.CameraInfo \
   /model/tigo/odometry@nav_msgs/msg/Odometry[ignition.msgs.Odometry \
-  /world/lacea_world/pose/info@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V
+  /world/lacea_world/pose/info@tf2_msgs/msg/TFMessage[ignition.msgs.Pose_V \
+  /scan@sensor_msgs/msg/LaserScan[ignition.msgs.LaserScan \
+  /clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock

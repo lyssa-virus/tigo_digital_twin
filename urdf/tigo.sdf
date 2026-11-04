@@ -59,6 +59,43 @@
           </clip>
         </camera>
       </sensor>
+
+      <!-- LIDAR 2D VIRTUAL (publica em /scan, frame laser_link) -->
+      <!-- Ajuste pose, alcance e amostras para o lidar real do TIGO -->
+      <sensor name="lidar" type="gpu_lidar">
+        <pose>0 0 0.16 0 0 0</pose>
+        <update_rate>10</update_rate>
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <topic>/scan</topic>
+        <ignition_frame_id>laser_link</ignition_frame_id>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>720</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>1</samples>
+              <resolution>1</resolution>
+              <min_angle>0</min_angle>
+              <max_angle>0</max_angle>
+            </vertical>
+          </scan>
+          <range>
+            <min>0.12</min>
+            <max>12.0</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </lidar>
+      </sensor>
     </link>
 
     <!-- ========================================== -->
