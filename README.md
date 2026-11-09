@@ -121,14 +121,24 @@ Com a simulação e a ponte rodando, os tópicos listados acima já estão dispo
 
 ---
 
-### 4. SLAM (opcional)
+### 4. Odometria simulada e SLAM (opcional)
 
 ```bash
-sudo apt install -y ros-humble-slam-toolbox rviz2
-./scripts/run_slam.sh
+sudo apt install -y ros-humble-slam-toolbox ros-humble-rviz2 ros-humble-teleop-twist-keyboard
 ```
 
-Em outro terminal, `rviz2` com Fixed Frame `map` e o display Map no tópico `/map`. Dirija o robô com `ros2 run teleop_twist_keyboard teleop_twist_keyboard` (instale `ros-humble-teleop-twist-keyboard`). O lidar virtual publica em `/scan` (400 amostras, 0,9°, 12 m, 10 Hz, conforme o datasheet); ajuste em `urdf/tigo.sdf` para casar com o lidar real. A configuração do SLAM fica em `config/slam_toolbox.yaml`. O TF `odom → base_link` vem da pose real do robô no Gazebo (`scripts/odom_to_tf.py`), porque o plugin mecanum não publica odometria: é uma odometria perfeita, sem deriva.
+Com `run_simulation.sh` e `run_bridge.sh` rodando, cada um em um terminal novo (sempre com `source ~/sim_env.sh` antes):
+
+```bash
+./scripts/run_sim_odom.sh     # SÓ simulação: publica /odom com erro realista
+./scripts/run_slam.sh         # igual na simulação e no robô real
+rviz2                         # Fixed Frame: map; displays Map (/map) e LaserScan (/scan)
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
+
+- `run_sim_odom.sh` substitui os encoders do robô real: lê a pose verdadeira do Gazebo e publica `/odom` com erro de escala, ruído e deriva. `NOISE=0` dá odometria perfeita, `NOISE=2` dobra o erro, `SEED=7` muda o sorteio.
+- `run_slam.sh` só enxerga `/odom` e `/scan` (tópicos do contrato do TIGO). No robô real, o `/odom` vem do `tigo_base`.
+- Lidar virtual: 400 amostras, 0,9°, 12 m, 10 Hz (datasheet). Configuração do SLAM em `config/slam_toolbox.yaml`.
 
 ---
 
