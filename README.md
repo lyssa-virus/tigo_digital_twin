@@ -121,6 +121,17 @@ Com a simulação e a ponte rodando, os tópicos listados acima já estão dispo
 
 ---
 
+### 4. SLAM (opcional)
+
+```bash
+sudo apt install -y ros-humble-slam-toolbox rviz2
+./scripts/run_slam.sh
+```
+
+Em outro terminal, `rviz2` com Fixed Frame `map` e o display Map no tópico `/map`. Dirija o robô com `ros2 run teleop_twist_keyboard teleop_twist_keyboard` (instale `ros-humble-teleop-twist-keyboard`). O lidar virtual publica em `/scan` (720 amostras, 12 m, 10 Hz); ajuste em `urdf/tigo.sdf` para casar com o lidar real. A configuração do SLAM fica em `config/slam_toolbox.yaml`. O TF `odom → base_link` vem da pose real do robô no Gazebo (`scripts/odom_to_tf.py`), porque o plugin mecanum não publica odometria: é uma odometria perfeita, sem deriva.
+
+---
+
 ## Próximas Etapas
 
 - [x] Criação do ambiente virtual
@@ -128,14 +139,14 @@ Com a simulação e a ponte rodando, os tópicos listados acima já estão dispo
 - [x] Organização do repositório
 - [x] Implementação da câmera de profundidade
 - [x] Ponte ROS ↔ Gazebo
-- [ ] SLAM em simulação
-- [ ] Lidar virtual
+- [x] Lidar virtual (/scan)
+- [ ] SLAM em simulação (script pronto, falta validar)
 - [ ] Inserção de obstáculos dinâmicos adicionais
 - [ ] Validação experimental comparativa (simulado vs real)
 
 ---
 ## Origem
 
-Cópia de [Roberta-Tavares/TIGO_Digital_Twin](https://github.com/Roberta-Tavares/TIGO_Digital_Twin) (modelo do robô, mundo do LACEA e ponte ROS 2 ↔ Gazebo), sem o algoritmo Gap Following.
+Cópia de [Roberta-Tavares/TIGO_Digital_Twin](https://github.com/Roberta-Tavares/TIGO_Digital_Twin) (modelo do robô, mundo do LACEA e ponte ROS 2 ↔ Gazebo).
 
 Laboratório de Controle e Automação (LACEA) - CEFET/RJ
