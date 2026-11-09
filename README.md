@@ -147,6 +147,6 @@ Em outro terminal, `rviz2` com Fixed Frame `map` e o display Map no tópico `/ma
 ---
 ## Origem
 
-Cópia de [Roberta-Tavares/TIGO_Digital_Twin](https://github.com/Roberta-Tavares/TIGO_Digital_Twin) (modelo do robô, mundo do LACEA e ponte ROS 2 ↔ Gazebo), sem o algoritmo Gap Following.
+Cópia de [Roberta-Tavares/TIGO_Digital_Twin](https://github.com/Roberta-Tavares/TIGO_Digital_Twin) (modelo do robô, mundo do LACEA e ponte ROS 2 ↔ Gazebo).
 
 Laboratório de Controle e Automação (LACEA) - CEFET/RJ
