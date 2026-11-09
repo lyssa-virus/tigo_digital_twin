@@ -128,7 +128,7 @@ sudo apt install -y ros-humble-slam-toolbox rviz2
 ./scripts/run_slam.sh
 ```
 
-Em outro terminal, `rviz2` com Fixed Frame `map` e o display Map no tópico `/map`. Dirija o robô com `ros2 run teleop_twist_keyboard teleop_twist_keyboard` (instale `ros-humble-teleop-twist-keyboard`). O lidar virtual publica em `/scan` (720 amostras, 12 m, 10 Hz); ajuste em `urdf/tigo.sdf` para casar com o lidar real. A configuração do SLAM fica em `config/slam_toolbox.yaml`. O TF `odom → base_link` vem da pose real do robô no Gazebo (`scripts/odom_to_tf.py`), porque o plugin mecanum não publica odometria: é uma odometria perfeita, sem deriva.
+Em outro terminal, `rviz2` com Fixed Frame `map` e o display Map no tópico `/map`. Dirija o robô com `ros2 run teleop_twist_keyboard teleop_twist_keyboard` (instale `ros-humble-teleop-twist-keyboard`). O lidar virtual publica em `/scan` (400 amostras, 0,9°, 12 m, 10 Hz, conforme o datasheet); ajuste em `urdf/tigo.sdf` para casar com o lidar real. A configuração do SLAM fica em `config/slam_toolbox.yaml`. O TF `odom → base_link` vem da pose real do robô no Gazebo (`scripts/odom_to_tf.py`), porque o plugin mecanum não publica odometria: é uma odometria perfeita, sem deriva.
 
 ---
 

@@ -40,17 +40,18 @@
         </material>
       </visual>
 
-      <!-- CÂMERA DE PROFUNDIDADE HP60C VIRTUAL -->
+      <!-- CÂMERA DE PROFUNDIDADE VIRTUAL (valores do datasheet; alcance de profundidade 0.10-10 m é SUPOSIÇÃO) -->
       <sensor name="ascamera_hp60c" type="depth_camera">
         <pose>0.18 0 0.12 0 0 0</pose>
-        <update_rate>15</update_rate>
+        <update_rate>30</update_rate>
         <always_on>true</always_on>
         <topic>/ascamera_hp60c/camera_publisher/depth0/image_raw</topic>
         <camera>
-          <horizontal_fov>1.047</horizontal_fov>
+          <horizontal_fov>1.396</horizontal_fov> <!-- 80 graus (datasheet: FOV H 80, V 43, D 90) -->
           <image>
+            <!-- Real: 1920x1080 por lente, 30 fps. Na simulação usamos 640x360 (mesma proporção 16:9) para não pesar -->
             <width>640</width>
-            <height>480</height>
+            <height>360</height>
             <format>R_FLOAT32</format>
           </image>
           <clip>
@@ -61,7 +62,8 @@
       </sensor>
 
       <!-- LIDAR 2D VIRTUAL (publica em /scan, frame laser_link) -->
-      <!-- Ajuste pose, alcance e amostras para o lidar real do TIGO -->
+      <!-- Datasheet: 360 graus, 10 Hz, 12 m, resolução 0.9 graus (400 pontos/volta, 4000 pts/s) -->
+      <!-- SUPOSIÇÕES: alcance mínimo 0.12 m, ruído 0.01 m, posição (0 0 0.16) -->
       <sensor name="lidar" type="gpu_lidar">
         <pose>0 0 0.16 0 0 0</pose>
         <update_rate>10</update_rate>
@@ -72,7 +74,7 @@
         <lidar>
           <scan>
             <horizontal>
-              <samples>720</samples>
+              <samples>400</samples>
               <resolution>1</resolution>
               <min_angle>-3.14159</min_angle>
               <max_angle>3.14159</max_angle>
