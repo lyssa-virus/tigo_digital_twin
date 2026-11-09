@@ -1,4 +1,4 @@
-# TIGO Digital Twin
+# TIGO Digital Twin (Twingo)
 
 Digital Twin do robô omnidirecional TIGO desenvolvido no Laboratório de Controle e Automação (LACEA) utilizando ROS 2 Humble e Ignition Gazebo 6.
 
