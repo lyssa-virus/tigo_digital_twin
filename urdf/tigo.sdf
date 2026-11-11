@@ -42,10 +42,12 @@
 
       <!-- CÂMERA DE PROFUNDIDADE VIRTUAL (valores do datasheet; alcance de profundidade 0.10-10 m é SUPOSIÇÃO) -->
       <sensor name="ascamera_hp60c" type="depth_camera">
-        <pose>0.18 0 0.12 0 0 0</pose>
+        <!-- Posição tirada do modelo 3D (oval da câmera): lente na face da frente, 16,5 cm à frente da origem do modelo, centrada; 9,2 cm do piso (base_link fica a 4,1 cm do piso) -->
+        <pose>0.165 0 0.049 0 0 0</pose>
         <update_rate>30</update_rate>
         <always_on>true</always_on>
         <topic>/ascamera_hp60c/camera_publisher/depth0/image_raw</topic>
+        <ignition_frame_id>camera_optical_link</ignition_frame_id>
         <camera>
           <horizontal_fov>1.396</horizontal_fov> <!-- 80 graus (datasheet: FOV H 80, V 43, D 90) -->
           <image>
@@ -61,11 +63,35 @@
         </camera>
       </sensor>
 
+      <!-- CÂMERA RGB VIRTUAL (lente esquerda do módulo estéreo). Mesma posição e campo de visão da profundidade. -->
+      <!-- SUPOSIÇÃO: tópico rgb0 (o nome real do driver pode ser outro) e 15 fps para não pesar a simulação -->
+      <sensor name="ascamera_hp60c_rgb" type="camera">
+        <pose>0.165 0 0.049 0 0 0</pose>
+        <update_rate>15</update_rate>
+        <always_on>true</always_on>
+        <topic>/ascamera_hp60c/camera_publisher/rgb0/image_raw</topic>
+        <ignition_frame_id>camera_optical_link</ignition_frame_id>
+        <camera>
+          <horizontal_fov>1.396</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>360</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.10</near>
+            <far>10.0</far>
+          </clip>
+        </camera>
+      </sensor>
+
       <!-- LIDAR 2D VIRTUAL (publica em /scan, frame laser_link) -->
       <!-- Datasheet: 360 graus, 10 Hz, 12 m, resolução 0.9 graus (400 pontos/volta, 4000 pts/s) -->
-      <!-- SUPOSIÇÕES: alcance mínimo 0.12 m, ruído 0.01 m, posição (0 0 0.16) -->
+      <!-- Posição tirada do modelo 3D (cilindro do lidar): 13,55 cm à frente da origem do modelo, centrado. Topo do cilindro a 17,4 cm do piso. -->
+      <!-- O plano de varredura (16,4 cm do piso) é SUPOSIÇÃO: 2,5 cm acima do fundo do lidar medido no robô real (13,89 cm). -->
+      <!-- SUPOSIÇÕES: plano de varredura 2,5 cm acima do fundo (z = 0,1389 + 0,025 - 0,041 = 0,123), alcance mínimo 0.12 m, ruído 0.01 m -->
       <sensor name="lidar" type="gpu_lidar">
-        <pose>0 0 0.16 0 0 0</pose>
+        <pose>0.1355 0 0.123 0 0 0</pose>
         <update_rate>10</update_rate>
         <always_on>true</always_on>
         <visualize>false</visualize>
