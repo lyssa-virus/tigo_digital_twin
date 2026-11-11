@@ -1,0 +1,82 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Enabled: true
+      Name: Grid
+      Cell Size: 1
+      Plane Cell Count: 20
+    - Class: rviz_default_plugins/Map
+      Enabled: true
+      Name: Mapa
+      Alpha: 0.7
+      Topic:
+        Value: /map
+        Depth: 5
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/LaserScan
+      Enabled: true
+      Name: Lidar (vermelho)
+      Topic:
+        Value: /scan
+        Reliability Policy: Best Effort
+      Color Transformer: FlatColor
+      Color: 255; 0; 0
+      Style: Flat Squares
+      Size (m): 0.03
+    - Class: rviz_default_plugins/LaserScan
+      Enabled: true
+      Name: Camera como scan (verde)
+      Topic:
+        Value: /camera/scan
+        Reliability Policy: Reliable
+      Color Transformer: FlatColor
+      Color: 0; 255; 0
+      Style: Flat Squares
+      Size (m): 0.03
+    - Class: rviz_default_plugins/PointCloud2
+      Enabled: true
+      Name: Nuvem de pontos da camera
+      Topic:
+        Value: /camera/points
+        Reliability Policy: Reliable
+      Color Transformer: AxisColor
+      Axis: Z
+      Style: Points
+      Size (Pixels): 2
+      Decay Time: 0
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Name: TF
+      Show Names: false
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Name: Profundidade
+      Topic:
+        Value: /ascamera_hp60c/camera_publisher/depth0/image_raw
+        Reliability Policy: Reliable
+      Normalize Range: false
+      Min Value: 0
+      Max Value: 5
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Name: RGB
+      Topic:
+        Value: /ascamera_hp60c/camera_publisher/rgb0/image_raw
+        Reliability Policy: Reliable
+  Global Options:
+    Fixed Frame: map
+    Frame Rate: 30
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 8
+      Pitch: 1.0
+      Yaw: 3.14
+    Saved: ~

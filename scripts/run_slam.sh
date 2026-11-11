@@ -7,8 +7,8 @@ source /opt/ros/humble/setup.bash
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(dirname "$SCRIPT_DIR")"
 
-# Posição do lidar em relação ao base_link (igual ao tigo.sdf: x y z)
-ros2 run tf2_ros static_transform_publisher --x 0 --y 0 --z 0.16 \
+# Posição do lidar em relação ao base_link (TEM que ser igual ao tigo.sdf: x y z)
+ros2 run tf2_ros static_transform_publisher --x 0.1355 --y 0 --z 0.123 \
   --frame-id base_link --child-frame-id laser_link --ros-args -p use_sim_time:=true &
 TF_STATIC=$!
 
